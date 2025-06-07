@@ -161,7 +161,7 @@ class ParticleSystem {
             originalY: y,
             targetX: data.targetX !== undefined ? data.targetX : x,
             targetY: data.targetY !== undefined ? data.targetY : y,
-            vx: Math.random() * 1 + 0.1, // 0.5~1.5 속도로 오른쪽으로 이동
+            vx: Math.random() * 0.7 + 0.1, // 0.5~1.5 속도로 오른쪽으로 이동
             vy: (Math.random() - 0.5) * 0.2, // 상하 움직임 최소화
             color: data.color || this.getRandomColor(),
             title: data.title || `파티클 ${this.particles.length + 1}`,
