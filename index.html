@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>무의식 도감</title>
+    <link rel="stylesheet" href="style.css">
+        <!-- Supabase 라이브러리 추가 -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <!-- 캔버스 -->
+    <canvas id="particleCanvas"></canvas>
+    
+    <!-- 파티클 추가 버튼 (우상단) -->
+    <button id="addParticleBtn" class="add-btn">+</button>
+    
+    <!-- 작품 설명 버튼 (하단 중앙) -->
+    <button id="infoBtn" class="info-btn">
+        <span>about</span>
+    </button>
+    
+    <!-- 파티클 추가 모달 -->
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🛌💭💤</h2>
+                <span class="close" id="addModalClose">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="particleTitle">꿈 이름:</label>
+                    <input type="text" id="particleTitle" placeholder="파티클 제목을 입력하세요">
+                </div>
+                <div class="form-group">
+                    <label for="particleAuthor">작성자:</label>
+                    <input type="text" id="particleAuthor" placeholder="작성자 이름을 입력하세요">
+                </div>
+                <div class="form-group">
+                    <label for="particleDescription">꿈 내용:</label>
+                    <textarea id="particleDescription" placeholder="파티클 설명을 입력하세요" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="particleColor">꿈 색상:</label>
+                    <input type="color" id="particleColor" value="#605E58">
+                </div>
+                <div class="form-actions">
+                    <button id="cancelAdd" class="btn-secondary">취소</button>
+                    <button id="confirmAdd" class="btn-primary">추가</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 파티클 정보 모달 -->
+    <div id="particleModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="particleModalTitle">꿈 정보</h2>
+                <span class="close" id="particleModalClose">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="particle-info">
+                    <div class="color-indicator">
+                        <div id="particleColorDisplay" class="color-circle"></div>
+                        <span>👀</span>
+                    </div>
+                    <div class="author-info">
+                        <strong>작성자:</strong> <span id="particleModalAuthor">작성자 정보</span>
+                    </div>
+                    <p id="particleModalDescription">꿈 내용은 여기에 표시됩니다.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 작품 설명 모달 -->
+    <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>무의식 도감</h2>
+                <span class="close" id="infoModalClose">&times;</span>
+            </div>
+            <div class="modal-body">
+                <h3>무의식의 파편을 픽셀로 수집하다.</h3>
+                <br>
+                <p style="line-height: 1.4;"> 본 프로젝트는 사용자의 무의식 속에서 포착된 꿈의 기억을 디지털 언어로 환원시키는 작업입니다. 이 과정에서 픽셀pixel 이라는 최소 단위의 시각 언어를 사용해 꿈의 단편을 가시화합니디. 픽셀은 데이터이자 조형이며, 가장 단순하지만 동시에 가장 확장 가능한 표현 형식입니다.</p>
+                <br>
+                <p style="line-height: 1.4;">꿈은 본질적으로 흐릿하고, 단어로 온전히 옮기기 어려운 감각의 집합입니다. 이에 픽셀은 그런 비언어적 기억을 담는 그릇이 됩니다. 각 꿈은 '도트 dots'로 환산되어 웹 기반의 공간 위에 저장되며, 관람자는 꿈 하나하나를 확대하거나 축소하며 그 구조와 색, 형태를 유추할 수 있습니다.</p>
+                <br>
+                <p style="line-height: 1.4;">픽셀은 단순히 복고적 미학이나 게임적 감수성에 그치는 것이 아닌, 기억과 꿈, 무의식을 최소 단위로 해체하고 재구성하는 방식으로서 기능합니다. 이 작은 점들은 하나의 감정, 하나의 장면, 혹은 하나의 인물이 될 수 있으며, 그 조합은 오직 한 사람의 꿈으로만 완성됩니다.</p>
+                <br>
+                <p style="line-height: 1.4;">기억의 선명도와 감정의 온도에 따라 각 도트의 색을 결정하여 아카이빙 하는 전시는 관람객이 다른 사람의 꿈을 탐색하고, 마치 픽셀 세계 안에서 수집된 꿈을 감상하는 것을 통해 무의식의 흔적을 마주하게 됩니다.
+                </p>
+                <br>
+                <br>
+
+                <p style="text-align: center;">made by 전보현(@vo1denuit)</p>
+                <br>
+                <p style="text-align: center;">special thanks to 유현승(@hhyuns_) & 이재혁(@bmplatina)</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        // 환경 변수 설정 (실제 Supabase 정보로 교체하세요)
+        window.SUPABASE_URL = 'https://rowbekkruhycfbeaviwe.supabase.co';
+        window.SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJvd2Jla2tydWh5Y2ZiZWF2aXdlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkyMTI4MTAsImV4cCI6MjA2NDc4ODgxMH0.2FJj_g2YEZekoMBXNv1C7bRsBBIEB753OVuixrSVUFY';
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
