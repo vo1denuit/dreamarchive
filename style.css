@@ -18,7 +18,6 @@
 body {
     /* 배경 이미지 설정 - 여기서 이미지 URL을 변경하세요 */
     background-image: url('/background.jpeg');
-    background-image: url('/dreamarchive/background.jpeg');  /* GitHub Pages용 절대 경로 */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
