@@ -17,7 +17,7 @@
 
 body {
     /* 배경 이미지 설정 - 여기서 이미지 URL을 변경하세요 */
-    background-image: url('/background.jpeg') !important;
+    background-image: url('background.jpeg') !important;
     background-size: cover !important;
     background-position: center !important;
     background-repeat: no-repeat !important;
