@@ -8,6 +8,7 @@ class ParticleSystem {
         this.mouseX = 0;
         this.mouseY = 0;
 
+
         // Supabase 클라이언트 초기화
         this.supabase = null;
         this.initSupabase();
@@ -16,7 +17,16 @@ class ParticleSystem {
         this.setupEventListeners();
         this.loadParticlesFromStorage();
         this.animate();
+        this.updateDreamCounter();
     }
+
+    updateDreamCounter() {
+    const counter = document.getElementById('dreamCounter');
+    if (counter) {
+        counter.textContent = `모인 꿈 수: ${this.particles.length}`;
+    }
+}
+
 
         initSupabase() {
         // 브라우저 환경에서 window 객체를 통해 설정값 가져오기
@@ -161,7 +171,7 @@ class ParticleSystem {
             originalY: y,
             targetX: data.targetX !== undefined ? data.targetX : x,
             targetY: data.targetY !== undefined ? data.targetY : y,
-            vx: Math.random() * 0.7 + 0.1, // 0.5~1.5 속도로 오른쪽으로 이동
+            vx: Math.random() * 1 + 0.5, // 0.5~1.5 속도로 오른쪽으로 이동
             vy: (Math.random() - 0.5) * 0.2, // 상하 움직임 최소화
             color: data.color || this.getRandomColor(),
             title: data.title || `파티클 ${this.particles.length + 1}`,
@@ -227,6 +237,7 @@ class ParticleSystem {
             // Supabase가 없으면 localStorage 사용
             this.loadParticlesFromStorage();
         }
+        this.updateDreamCounter();
     }
     
     
@@ -256,6 +267,8 @@ class ParticleSystem {
             }
         } else {
             this.generateDefaultParticles();
+            this.updateDreamCounter();
+
         }
     }
     
@@ -385,6 +398,7 @@ class ParticleSystem {
             });
             this.particles.push(particle);
         }
+        this.updateDreamCounter();
         // localStorage에 백업 저장
         this.saveParticlesToStorage();
         console.log(`${this.particles.length}개 기본 파티클 생성됨`);
@@ -395,6 +409,7 @@ class ParticleSystem {
         const author = document.getElementById('particleAuthor').value.trim();
         const description = document.getElementById('particleDescription').value.trim();
         const color = document.getElementById('particleColor').value;
+        
         
         if (!title) {
             alert('제목을 입력해주세요.');
