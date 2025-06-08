@@ -19,6 +19,46 @@ class ParticleSystem {
         this.animate();
         this.updateDreamCounter();
     }
+
+async init() {
+    this.resizeCanvas();
+
+    // 1️⃣ 기본 꿈 생성 먼저
+    this.generateDefaultParticles();
+
+    // 2️⃣ Supabase에서 추가 꿈 불러오기
+    const { data, error } = await this.supabase
+        .from('particles')
+        .select('*')
+        .order('created_at', { ascending: true });
+
+    if (!error && data.length > 0) {
+        // 기본 꿈 title 목록 저장
+        const existingTitles = new Set(this.particles.map(p => p.title));
+
+        const loadedParticles = data
+            .filter(p => !existingTitles.has(p.title)) // 중복 제거
+            .map(p => this.createParticle({
+                title: p.title,
+                description: p.description,
+                color: p.color,
+                x: Math.random() * this.canvas.width,
+                y: Math.random() * this.canvas.height,
+            }));
+
+        this.particles.push(...loadedParticles);
+        console.log(`✅ Supabase에서 ${loadedParticles.length}개 파티클 추가됨`);
+    } else {
+        console.warn('❌ Supabase에서 데이터를 불러오지 못했습니다');
+    }
+
+    this.setupEventListeners();
+    this.animate();
+    this.updateDreamCounter();
+}
+
+
+
 async loadParticlesFromSupabase() {
         const { data, error } = await this.supabase
             .from('particles')
@@ -38,7 +78,7 @@ async loadParticlesFromSupabase() {
             y: Math.random() * this.canvas.height,
         }));
 
-        this.particles = loadedParticles;
+        this.particles = [...loadedParticles, ...this.particles];
         this.updateDreamCounter();
         this.saveParticlesToStorage();
         console.log(`✅ Supabase에서 ${data.length}개 파티클 불러옴`);
@@ -77,10 +117,7 @@ async loadParticlesFromSupabase() {
         }
     }
     
-    init() {
-        this.resizeCanvas();
-        window.addEventListener('resize', () => this.resizeCanvas());
-    }
+
     
     resizeCanvas() {
         this.canvas.width = window.innerWidth;
@@ -184,29 +221,33 @@ async loadParticlesFromSupabase() {
         });
     }
     
-    createParticle(data) {
-        const x = data.x !== undefined ? data.x : Math.random() * this.canvas.width;
-        const y = data.y !== undefined ? data.y : Math.random() * this.canvas.height;
-        
-        return {
-            id: data.id || this.generateId(),
-            x: x,
-            y: y,
-            originalX: x,
-            originalY: y,
-            targetX: data.targetX !== undefined ? data.targetX : x,
-            targetY: data.targetY !== undefined ? data.targetY : y,
-            vx: Math.random() * 1 + 0.5, // 0.5~1.5 속도로 오른쪽으로 이동
-            vy: (Math.random() - 0.5) * 0.2, // 상하 움직임 최소화
-            color: data.color || this.getRandomColor(),
-            title: data.title || `파티클 ${this.particles.length + 1}`,
-            author: data.author || '익명',
-            description: data.description || '기본 파티클입니다.',
-            radius: 8,
-            isGathered: data.isGathered !== undefined ? data.isGathered : false,
-            isHovered: false // 마우스 호버 상태 추가
-        };
-    }
+createParticle(data) {
+    const x = data.x !== undefined ? data.x : Math.random() * this.canvas.width;
+    const y = data.y !== undefined ? data.y : Math.random() * this.canvas.height;
+
+    return {
+        id: data.id || this.generateId(),
+        x: x,
+        y: y,
+        originalX: x,
+        originalY: y,
+        targetX: data.targetX !== undefined ? data.targetX : x,
+        targetY: data.targetY !== undefined ? data.targetY : y,
+
+        // 👉 아래 속도 설정을 명시적으로 확인 후 fallback 처리
+        vx: data.vx !== undefined ? data.vx : Math.random() * 0.7 + 0.2,  // 오른쪽 이동 속도 (0.5 ~ 1.5)
+        vy: data.vy !== undefined ? data.vy : (Math.random() - 0.5) * 0.2,  // 상하 진동 약간
+
+        color: data.color || this.getRandomColor(),
+        title: data.title || `파티클 ${this.particles.length + 1}`,
+        author: data.author || '익명',
+        description: data.description || '기본 파티클입니다.',
+        radius: 8,
+        isGathered: data.isGathered !== undefined ? data.isGathered : false,
+        isHovered: false
+    };
+}
+
     
     generateId() {
         return Math.random().toString(36).substr(2, 9);
