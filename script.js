@@ -14,7 +14,6 @@ class ParticleSystem {
         this.initSupabase();
         
         this.init();
-        this.setupEventListeners();
         this.loadParticlesFromStorage();
         this.animate();
         this.updateDreamCounter();
