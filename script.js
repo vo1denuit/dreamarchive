@@ -156,6 +156,9 @@ async loadParticlesFromSupabase() {
         const addModal = document.getElementById('addModal');
         const particleModal = document.getElementById('particleModal');
         const infoModal = document.getElementById('infoModal');
+        const newConfirm = confirmAdd.cloneNode(true);
+        confirmAdd.parentNode.replaceChild(newConfirm, confirmAdd);
+
         
         // 파티클 추가 모달
         addBtn.addEventListener('click', () => {
