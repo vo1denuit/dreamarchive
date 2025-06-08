@@ -19,6 +19,31 @@ class ParticleSystem {
         this.animate();
         this.updateDreamCounter();
     }
+async loadParticlesFromSupabase() {
+        const { data, error } = await this.supabase
+            .from('particles')
+            .select('*')
+            .order('created_at', { ascending: true });
+
+        if (error) {
+            console.error('❌ Supabase fetch 실패:', error);
+            return;
+        }
+
+        const loadedParticles = data.map((p) => this.createParticle({
+            title: p.title,
+            description: p.description,
+            color: p.color,
+            x: Math.random() * this.canvas.width,
+            y: Math.random() * this.canvas.height,
+        }));
+
+        this.particles = loadedParticles;
+        this.updateDreamCounter();
+        this.saveParticlesToStorage();
+        console.log(`✅ Supabase에서 ${data.length}개 파티클 불러옴`);
+    }
+    
 
     updateDreamCounter() {
     const counter = document.getElementById('dreamCounter');
