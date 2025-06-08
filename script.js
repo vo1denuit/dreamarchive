@@ -237,7 +237,7 @@ createParticle(data) {
         targetY: data.targetY !== undefined ? data.targetY : y,
 
         // 👉 아래 속도 설정을 명시적으로 확인 후 fallback 처리
-        vx: data.vx !== undefined ? data.vx : Math.random() * 0.7 + 0.2,  // 오른쪽 이동 속도 (0.5 ~ 1.5)
+        vx: data.vx !== undefined ? data.vx : Math.random() * 0.6 + 0.1,  // 오른쪽 이동 속도 (0.5 ~ 1.5)
         vy: data.vy !== undefined ? data.vy : (Math.random() - 0.5) * 0.2,  // 상하 진동 약간
 
         color: data.color || this.getRandomColor(),
