@@ -387,7 +387,7 @@ class ParticleSystem {
         ];
         
         // 60개까지 파티클 생성
-        for (let i = 0; i < 80; i++) {
+        for (let i = 0; i < 45; i++) {
             const template = defaultParticles[i % defaultParticles.length];
             const particle = this.createParticle({
                 ...template,
