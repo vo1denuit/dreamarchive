@@ -39,6 +39,7 @@ async init() {
             .filter(p => !existingTitles.has(p.title)) // 중복 제거
             .map(p => this.createParticle({
                 title: p.title,
+                author: p.author_name,
                 description: p.description,
                 color: p.color,
                 x: Math.random() * this.canvas.width,
@@ -158,6 +159,8 @@ async loadParticlesFromSupabase() {
         const infoModal = document.getElementById('infoModal');
         const newConfirm = confirmAdd.cloneNode(true);
         confirmAdd.parentNode.replaceChild(newConfirm, confirmAdd);
+        
+
 
         
         // 파티클 추가 모달
@@ -172,7 +175,7 @@ async loadParticlesFromSupabase() {
         document.getElementById('particleDescription').value = '';
         document.getElementById('particleColor').value = '#605E58';
     
-        addModal.style.display = 'none';
+        addModal.style.display = 'none'; 
         });
         
         document.getElementById('cancelAdd').addEventListener('click', () => {
@@ -237,7 +240,7 @@ createParticle(data) {
         targetY: data.targetY !== undefined ? data.targetY : y,
 
         // 👉 아래 속도 설정을 명시적으로 확인 후 fallback 처리
-        vx: data.vx !== undefined ? data.vx : Math.random() * 0.6 + 0.1,  // 오른쪽 이동 속도 (0.5 ~ 1.5)
+        vx: data.vx !== undefined ? data.vx : Math.random() * 0.7 + 0.2,  // 오른쪽 이동 속도 (0.5 ~ 1.5)
         vy: data.vy !== undefined ? data.vy : (Math.random() - 0.5) * 0.2,  // 상하 진동 약간
 
         color: data.color || this.getRandomColor(),
@@ -287,6 +290,7 @@ createParticle(data) {
                     this.particles = data.map(item => this.createParticle({
                         id: item.id,
                         title: item.title,
+                        author: p.author_name,
                         description: item.description,
                         color: item.color,
                         isGathered: false // 초기 로드 시에는 모두 흩어진 상태
@@ -477,6 +481,8 @@ createParticle(data) {
         const author = document.getElementById('particleAuthor').value.trim();
         const description = document.getElementById('particleDescription').value.trim();
         const color = document.getElementById('particleColor').value;
+
+        
         
         
         if (!title) {
@@ -533,8 +539,11 @@ createParticle(data) {
         } else {
             console.log('파티클이 로컬에 저장되었습니다.');
             alert('파티클이 로컬에 저장되었습니다.');
+            await this.loadParticlesFromSupabase();
         }
-        
+        if (savedData) {
+            window.location.reload();  // ✅ 이 줄이 자동 새로고침을 수행함
+        }
         // 상태 로그
         console.log(`새 파티클 생성됨 - 모임 상태: ${this.isGathered ? '모임' : '흩어짐'}`);
 
