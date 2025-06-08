@@ -17,11 +17,11 @@
 
 body {
     /* 배경 이미지 설정 - 여기서 이미지 URL을 변경하세요 */
-   background-image: url('background.jpeg') !important;
-   background-size: cover !important;
-   background-position: center !important;
-   background-repeat: no-repeat !important;
-   background-attachment: fixed !important;
+    background-image: url('/background.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     font-family: 'GabiaHeuldot-Regular', sans-serif;
     overflow: hidden;
     height: 100vh;
@@ -338,6 +338,18 @@ body {
 } 
 #cancelAdd {
     display: none !important;
+}
+
+#dreamCounter {
+  position: absolute;
+  bottom: 16px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  pointer-events: none;
 }
 
 
